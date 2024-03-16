@@ -20,6 +20,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -32,15 +33,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.wreckingballsoftware.lingosherpa.R
+import com.wreckingballsoftware.lingosherpa.ui.compose.LanguageDropdown
 import com.wreckingballsoftware.lingosherpa.ui.mainscreen.models.MainScreenEvent
 import com.wreckingballsoftware.lingosherpa.ui.mainscreen.models.MainScreenState
+import com.wreckingballsoftware.lingosherpa.ui.theme.customTypography
+import com.wreckingballsoftware.lingosherpa.ui.theme.dimensions
 import org.koin.androidx.compose.getViewModel
 
 @Composable
@@ -58,7 +60,9 @@ fun MainScreenContent(
     eventHandler: (MainScreenEvent) -> Unit
 ) {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .padding(MaterialTheme.dimensions.padding)
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         val keyboard = LocalSoftwareKeyboardController.current
@@ -72,13 +76,14 @@ fun MainScreenContent(
         ) {
             Text(
                 text = stringResource(id = R.string.app_name),
-                fontSize = 48.sp,
-                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.customTypography.headline,
             )
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.dimensions.spaceMedium))
+            LanguageDropdown(state = state, eventHandler = eventHandler)
+            Spacer(modifier = Modifier.height(MaterialTheme.dimensions.spaceSmall))
             OutlinedTextField(
                 modifier = Modifier
-                    .height(120.dp),
+                    .height(MaterialTheme.dimensions.textFieldHeight),
                 value = state.textToTranslate,
                 onValueChange = { text ->
                     eventHandler(MainScreenEvent.TextToTranslateChanged(text))
@@ -99,10 +104,10 @@ fun MainScreenContent(
                     }
                 ),
             )
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.dimensions.spaceSmall))
             OutlinedTextField(
                 modifier = Modifier
-                    .height(120.dp),
+                    .height(MaterialTheme.dimensions.textFieldHeight),
                 readOnly = true,
                 value = state.translatedText,
                 onValueChange = { },
@@ -112,20 +117,21 @@ fun MainScreenContent(
                     )
                 },
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.dimensions.spaceSmall))
             if (state.translatedText.isNotEmpty()) {
                 OutlinedButton(
                     modifier = Modifier
-                        .size(48.dp),
+                        .size(MaterialTheme.dimensions.speechButtonSize),
                     shape = CircleShape,
                     border = BorderStroke(1.dp, Color.Gray),
                     contentPadding = PaddingValues(0.dp),
                     onClick = {
-                        MainScreenEvent.SpeakTranslationClicked
+                        eventHandler(MainScreenEvent.SpeakTranslationClicked)
                     }
                 ) {
                     Icon(
-                        modifier = Modifier.padding(8.dp),
+                        modifier = Modifier
+                            .padding(MaterialTheme.dimensions.paddingSmall),
                         painter = painterResource(id = R.drawable.audio),
                         contentDescription = stringResource(id = R.string.play_translation)
                     )
@@ -134,8 +140,8 @@ fun MainScreenContent(
         }
         Button(
             modifier = Modifier
-                .width(160.dp)
-                .padding(bottom = 32.dp),
+                .width(MaterialTheme.dimensions.buttonWidth)
+                .padding(bottom = MaterialTheme.dimensions.spaceMedium),
             onClick = {
                 eventHandler(MainScreenEvent.TranslateButtonClicked)
                 keyboard?.hide()
