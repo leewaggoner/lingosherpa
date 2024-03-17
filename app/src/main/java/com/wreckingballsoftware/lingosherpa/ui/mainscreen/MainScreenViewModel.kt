@@ -34,10 +34,6 @@ class MainScreenViewModel(
             ttsReady.collect { ready ->
                 if (ready) {
                     val languages = tts.availableLanguages.toList().sortedBy { it.displayName }
-                    for (language in languages) {
-                        println("displayName: ${language.displayName}")
-                        println("language: ${language.language}")
-                    }
                     eventHandler(MainScreenEvent.SetLanguages(languages))
                 }
             }
