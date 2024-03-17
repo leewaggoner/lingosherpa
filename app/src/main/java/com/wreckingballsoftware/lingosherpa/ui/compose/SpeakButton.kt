@@ -3,7 +3,6 @@ package com.wreckingballsoftware.lingosherpa.ui.compose
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -15,7 +14,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.wreckingballsoftware.lingosherpa.R
-import com.wreckingballsoftware.lingosherpa.ui.mainscreen.models.MainScreenEvent
 import com.wreckingballsoftware.lingosherpa.ui.theme.dimensions
 
 @Composable
