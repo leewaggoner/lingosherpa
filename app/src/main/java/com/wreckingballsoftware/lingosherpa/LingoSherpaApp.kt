@@ -1,7 +1,7 @@
 package com.wreckingballsoftware.lingosherpa
 
 import android.app.Application
-import com.wreckingballsoftware.di.appModule
+import com.wreckingballsoftware.lingosherpa.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin

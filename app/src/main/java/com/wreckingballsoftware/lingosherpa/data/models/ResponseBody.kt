@@ -1,4 +1,4 @@
-package com.wreckingballsoftware.data.models
+package com.wreckingballsoftware.lingosherpa.data.models
 
 data class ResponseBody(
     val detectedLanguage: DetectedLanguage = DetectedLanguage(),

@@ -1,4 +1,4 @@
-package com.wreckingballsoftware.domain
+package com.wreckingballsoftware.lingosherpa.domain
 
 sealed class ApiResult<T> {
     class Success<T>(val data: T) : ApiResult<T>()

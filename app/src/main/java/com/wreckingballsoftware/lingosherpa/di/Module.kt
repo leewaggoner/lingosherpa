@@ -1,10 +1,10 @@
-package com.wreckingballsoftware.di
+package com.wreckingballsoftware.lingosherpa.di
 
 import android.content.Context
 import android.speech.tts.TextToSpeech
 import android.util.Log
-import com.wreckingballsoftware.data.network.TranslationService
-import com.wreckingballsoftware.data.repositories.TranslationRepo
+import com.wreckingballsoftware.lingosherpa.data.network.TranslationService
+import com.wreckingballsoftware.lingosherpa.data.repositories.TranslationRepo
 import com.wreckingballsoftware.lingosherpa.BuildConfig
 import com.wreckingballsoftware.lingosherpa.ui.mainscreen.MainScreenViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

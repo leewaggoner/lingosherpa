@@ -1,10 +1,10 @@
-package com.wreckingballsoftware.data.repositories
+package com.wreckingballsoftware.lingosherpa.data.repositories
 
-import com.wreckingballsoftware.data.models.NetworkResponse
-import com.wreckingballsoftware.data.models.TranslationRequest
-import com.wreckingballsoftware.data.models.TranslationResponse
-import com.wreckingballsoftware.data.models.toNetworkErrorResponse
-import com.wreckingballsoftware.data.network.TranslationService
+import com.wreckingballsoftware.lingosherpa.data.models.NetworkResponse
+import com.wreckingballsoftware.lingosherpa.data.models.TranslationRequest
+import com.wreckingballsoftware.lingosherpa.data.models.TranslationResponse
+import com.wreckingballsoftware.lingosherpa.data.models.toNetworkErrorResponse
+import com.wreckingballsoftware.lingosherpa.data.network.TranslationService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
