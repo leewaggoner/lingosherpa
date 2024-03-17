@@ -1,7 +1,12 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-parcelize")
 }
+
+val translateApiKey: String = gradleLocalProperties(rootDir).getProperty("TRANSLATE_API_KEY")
 
 android {
     namespace = "com.wreckingballsoftware.lingosherpa"
@@ -21,6 +26,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField(name = "TRANSLATE_API_KEY", type = "String", value = "\"$translateApiKey\"")
+            buildConfigField(name = "TRANSLATE_URL", type = "String", value = "\"https://api.cognitive.microsofttranslator.com/\"")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -51,7 +60,6 @@ android {
 }
 
 dependencies {
-
     implementation("androidx.activity:activity-compose:1.8.2")
     implementation(platform("androidx.compose:compose-bom:2023.03.00"))
     implementation("androidx.compose.ui:ui")
@@ -63,6 +71,9 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("io.insert-koin:koin-android:3.5.0")
 
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
     implementation("io.insert-koin:koin-android:3.5.0")
     implementation("io.insert-koin:koin-androidx-compose:3.5.0")
 

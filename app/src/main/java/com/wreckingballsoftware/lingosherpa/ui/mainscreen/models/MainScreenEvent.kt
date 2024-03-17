@@ -9,6 +9,6 @@ sealed interface MainScreenEvent {
     data class LanguageSelected(val language: Locale) : MainScreenEvent
     data class TextToTranslateChanged(val text: String) : MainScreenEvent
     data object TranslateButtonClicked : MainScreenEvent
-    data class DisplayTranslation(val translatedText: String) : MainScreenEvent
+    data object DismissError : MainScreenEvent
     data object SpeakTranslationClicked : MainScreenEvent
 }

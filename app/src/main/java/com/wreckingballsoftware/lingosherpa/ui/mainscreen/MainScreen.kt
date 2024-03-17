@@ -38,6 +38,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wreckingballsoftware.lingosherpa.R
+import com.wreckingballsoftware.lingosherpa.ui.compose.LingoSherpaErrorAlert
 import com.wreckingballsoftware.lingosherpa.ui.compose.LanguageDropdown
 import com.wreckingballsoftware.lingosherpa.ui.mainscreen.models.MainScreenEvent
 import com.wreckingballsoftware.lingosherpa.ui.mainscreen.models.MainScreenState
@@ -163,6 +164,12 @@ fun MainScreenContent(
                 )
         ) {
             CircularProgressIndicator()
+        }
+    }
+
+    if (state.errorMessage != null) {
+        LingoSherpaErrorAlert(message = state.errorMessage) {
+            eventHandler(MainScreenEvent.DismissError)
         }
     }
 }
