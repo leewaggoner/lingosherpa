@@ -4,11 +4,13 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.wreckingballsoftware.lingosherpa.R
 
 @Composable
-fun LingoSherpaAlert(
+fun Alert(
+    modifier: Modifier = Modifier,
     title: String,
     message: String,
     onDismissRequest: () -> Unit,
@@ -16,9 +18,17 @@ fun LingoSherpaAlert(
     onDismissAlert: (() -> Unit)?,
 ) {
     AlertDialog(
+        modifier = modifier,
         title = { Text(text = title) },
         text = { Text(text = message) },
         onDismissRequest = onDismissRequest,
+        confirmButton = {
+            Button(
+                onClick = onConfirmAlert
+            ) {
+                Text(text = stringResource(id = R.string.ok))
+            }
+        },
         dismissButton = {
             if (onDismissAlert != null) {
                 Button(
@@ -28,12 +38,5 @@ fun LingoSherpaAlert(
                 }
             }
         },
-        confirmButton = {
-            Button(
-                onClick = onConfirmAlert
-            ) {
-                Text(text = stringResource(id = R.string.ok))
-            }
-        }
     )
 }

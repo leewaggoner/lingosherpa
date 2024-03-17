@@ -75,6 +75,10 @@ class MainScreenViewModel(
     }
 
     private fun translateText() {
+        if (state.textToTranslate.isEmpty()) {
+            state = state.copy(errorMessage = "Please enter text to translate")
+            return
+        }
         state = state.copy(displaySpinner = true)
         viewModelScope.launch(Dispatchers.Main) {
             val result = translationRepo.getTranslation(
@@ -94,7 +98,9 @@ class MainScreenViewModel(
     }
 
     private fun speakTranslation() {
-        tts.speak(state.translatedText, TextToSpeech.QUEUE_FLUSH, null, "id")
+        if (state.translatedText.isNotEmpty()) {
+            tts.speak(state.translatedText, TextToSpeech.QUEUE_FLUSH, null, "id")
+        }
     }
 }
 
