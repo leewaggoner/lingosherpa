@@ -34,6 +34,10 @@ class MainScreenViewModel(
             ttsReady.collect { ready ->
                 if (ready) {
                     val languages = tts.availableLanguages.toList().sortedBy { it.displayName }
+                    for (language in languages) {
+                        println("displayName: ${language.displayName}")
+                        println("language: ${language.language}")
+                    }
                     eventHandler(MainScreenEvent.SetLanguages(languages))
                 }
             }
@@ -48,7 +52,7 @@ class MainScreenViewModel(
             is MainScreenEvent.LanguageSelected -> {
                 tts.language = event.language
                 state = state.copy(
-                    selectedLanguage = event.language.displayName,
+                    selectedLanguage = event.language,
                     dropdownExpanded = false
                 )
             }
@@ -79,19 +83,21 @@ class MainScreenViewModel(
             state = state.copy(errorMessage = "Please enter text to translate")
             return
         }
-        state = state.copy(displaySpinner = true)
-        viewModelScope.launch(Dispatchers.Main) {
-            val result = translationRepo.getTranslation(
-                targetLanguage = "id",
-                request = TranslationRequest().apply { add(RequestBody(state.textToTranslate)) }
-            ).mapToTranslationString()
-            state = when (result) {
-                is ApiResult.Success -> {
-                    state.copy(translatedText = result.data, displaySpinner = false)
-                }
 
-                is ApiResult.Error -> {
-                    state.copy(errorMessage = result.errorMessage, displaySpinner = false)
+        state.selectedLanguage?.let { locale ->
+            state = state.copy(displaySpinner = true)
+            viewModelScope.launch(Dispatchers.Main) {
+                val result = translationRepo.getTranslation(
+                    targetLanguage = locale.language,
+                    request = TranslationRequest().apply { add(RequestBody(state.textToTranslate)) }
+                ).mapToTranslationString()
+                state = when (result) {
+                    is ApiResult.Success -> {
+                        state.copy(translatedText = result.data, displaySpinner = false)
+                    }
+                    is ApiResult.Error -> {
+                        state.copy(errorMessage = result.errorMessage, displaySpinner = false)
+                    }
                 }
             }
         }
@@ -99,7 +105,14 @@ class MainScreenViewModel(
 
     private fun speakTranslation() {
         if (state.translatedText.isNotEmpty()) {
-            tts.speak(state.translatedText, TextToSpeech.QUEUE_FLUSH, null, "id")
+            state.selectedLanguage?.let { locale ->
+                tts.speak(
+                    state.translatedText,
+                    TextToSpeech.QUEUE_FLUSH,
+                    null,
+                    locale.language
+                )
+            }
         }
     }
 }

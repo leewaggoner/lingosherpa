@@ -1,8 +1,8 @@
 package com.wreckingballsoftware.lingosherpa.data.network
 
+import com.wreckingballsoftware.lingosherpa.BuildConfig
 import com.wreckingballsoftware.lingosherpa.data.models.TranslationRequest
 import com.wreckingballsoftware.lingosherpa.data.models.TranslationResponse
-import com.wreckingballsoftware.lingosherpa.BuildConfig
 import retrofit2.http.Body
 import retrofit2.http.Headers
 import retrofit2.http.POST

@@ -7,7 +7,7 @@ import java.util.Locale
 @Parcelize
 data class MainScreenState(
     val dropdownExpanded: Boolean = false,
-    val selectedLanguage: String = "",
+    val selectedLanguage: Locale? = null,
     val languages: List<Locale> = emptyList(),
     val textToTranslate: String = "",
     val translatedText: String = "",

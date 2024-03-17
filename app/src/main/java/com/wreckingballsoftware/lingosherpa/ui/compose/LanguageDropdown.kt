@@ -31,7 +31,7 @@ fun LanguageDropdown(
         OutlinedTextField(
             modifier = Modifier.menuAnchor(),
             readOnly = true,
-            value = state.selectedLanguage,
+            value = state.selectedLanguage?.displayLanguage ?: "",
             onValueChange = { },
             label = {
                 Text(
