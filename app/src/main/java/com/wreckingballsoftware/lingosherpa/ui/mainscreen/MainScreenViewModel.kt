@@ -50,6 +50,7 @@ class MainScreenViewModel(
             is MainScreenEvent.LanguageSelected -> {
                 val available = tts.isLanguageAvailable(event.language)
                 if (available == TextToSpeech.LANG_MISSING_DATA || available == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    //ask the user to install the language data
                     state = state.copy(alertMessageId = R.string.install_language)
                 }
                 state = state.copy(selectedLanguage = event.language, dropdownExpanded = false)
@@ -103,24 +104,31 @@ class MainScreenViewModel(
 
     private fun speakTranslation() {
         if (state.translatedText.isNotEmpty()) {
+            if (state.selectedLanguage == null) {
+                state = state.copy(errorMessageId = R.string.select_language)
+                return
+            }
+
+            //make sure the user has installed the language data
             if (tts.isLanguageAvailable(state.selectedLanguage) == TextToSpeech.LANG_MISSING_DATA) {
                 state = state.copy(alertMessageId = R.string.install_language)
                 return
             }
+            
             tts.language = state.selectedLanguage
-            state.selectedLanguage?.let { locale ->
-                if (
-                    tts.speak(
-                        state.translatedText,
-                        TextToSpeech.QUEUE_FLUSH,
-                        null,
-                        "utteranceId"
-                    )  == TextToSpeech.ERROR
-                ) {
-                    state = state.copy(errorMessageId = R.string.speaking_error)
-                } else {
-                    Log.d("MainScreenViewModel", "Speaking translation: ${state.selectedLanguage?.displayLanguage}")
-                }
+            if (
+                tts.speak(
+                    state.translatedText,
+                    TextToSpeech.QUEUE_FLUSH,
+                    null,
+                    "utteranceId"
+                )  == TextToSpeech.ERROR
+            ) {
+                state = state.copy(errorMessageId = R.string.speaking_error)
+            } else {
+                Log.d(
+                    MainScreenViewModel::class.simpleName,
+                    "Speaking translation: ${state.selectedLanguage?.displayLanguage}")
             }
         }
     }

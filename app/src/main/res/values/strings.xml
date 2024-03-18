@@ -12,4 +12,5 @@
     <string name="install_language">Language not supported, please install it.</string>
     <string name="enter_text">Please enter text to translate.</string>
     <string name="speaking_error">Error speaking translation.</string>
+    <string name="select_language">Please select a language.</string>
 </resources>
