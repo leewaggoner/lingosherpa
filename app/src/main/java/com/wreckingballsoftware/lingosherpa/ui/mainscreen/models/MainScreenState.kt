@@ -12,5 +12,7 @@ data class MainScreenState(
     val textToTranslate: String = "",
     val translatedText: String = "",
     val errorMessage: String? = null,
+    val errorMessageId: Int? = null,
+    val alertMessageId: Int? = null,
     val displaySpinner: Boolean = false,
 ) : Parcelable

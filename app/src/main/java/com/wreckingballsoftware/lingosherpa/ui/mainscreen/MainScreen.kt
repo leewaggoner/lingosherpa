@@ -1,5 +1,7 @@
 package com.wreckingballsoftware.lingosherpa.ui.mainscreen
 
+import android.content.Intent
+import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,11 +16,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.app.ActivityCompat
 import com.wreckingballsoftware.lingosherpa.R
+import com.wreckingballsoftware.lingosherpa.ui.compose.Alert
 import com.wreckingballsoftware.lingosherpa.ui.compose.AppButton
 import com.wreckingballsoftware.lingosherpa.ui.compose.EditTextField
 import com.wreckingballsoftware.lingosherpa.ui.compose.ErrorAlert
@@ -44,6 +49,7 @@ fun MainScreenContent(
     state: MainScreenState,
     eventHandler: (MainScreenEvent) -> Unit
 ) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .padding(MaterialTheme.dimensions.padding)
@@ -112,10 +118,29 @@ fun MainScreenContent(
         LoadingSpinner()
     }
 
-    if (state.errorMessage != null) {
-        ErrorAlert(message = state.errorMessage) {
-            eventHandler(MainScreenEvent.DismissError)
+    if (state.errorMessage != null || state.errorMessageId != null) {
+        val message = state.errorMessage ?: stringResource(id = state.errorMessageId!!)
+        ErrorAlert(message = message) {
+            eventHandler(MainScreenEvent.DismissAlert)
         }
+    }
+
+    if (state.alertMessageId != null) {
+        Alert(
+            title = stringResource(id = R.string.alert_title),
+            message = stringResource(id = state.alertMessageId),
+            onDismissAlert = {
+                eventHandler(MainScreenEvent.DismissAlert)
+            },
+            onConfirmAlert = {
+                val installIntent = Intent().setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA)
+                ActivityCompat.startActivity(context, installIntent, null)
+                eventHandler(MainScreenEvent.DismissAlert)
+            },
+            onDismissRequest = {
+                eventHandler(MainScreenEvent.DismissAlert)
+            }
+        )
     }
 }
 

@@ -1,12 +1,14 @@
 package com.wreckingballsoftware.lingosherpa.ui.mainscreen
 
 import android.speech.tts.TextToSpeech
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.SavedStateHandleSaveableApi
 import androidx.lifecycle.viewmodel.compose.saveable
+import com.wreckingballsoftware.lingosherpa.R
 import com.wreckingballsoftware.lingosherpa.data.models.NetworkResponse
 import com.wreckingballsoftware.lingosherpa.data.models.RequestBody
 import com.wreckingballsoftware.lingosherpa.data.models.TranslationRequest
@@ -33,7 +35,7 @@ class MainScreenViewModel(
         viewModelScope.launch(Dispatchers.Main) {
             ttsReady.collect { ready ->
                 if (ready) {
-                    val languages = tts.availableLanguages.toList().sortedBy { it.displayName }
+                    val languages = translationRepo.getTranslationLocales(tts)
                     eventHandler(MainScreenEvent.SetLanguages(languages))
                 }
             }
@@ -46,11 +48,11 @@ class MainScreenViewModel(
                 state = state.copy(languages = event.languages)
             }
             is MainScreenEvent.LanguageSelected -> {
-                tts.language = event.language
-                state = state.copy(
-                    selectedLanguage = event.language,
-                    dropdownExpanded = false
-                )
+                val available = tts.isLanguageAvailable(event.language)
+                if (available == TextToSpeech.LANG_MISSING_DATA || available == TextToSpeech.LANG_NOT_SUPPORTED) {
+                    state = state.copy(alertMessageId = R.string.install_language)
+                }
+                state = state.copy(selectedLanguage = event.language, dropdownExpanded = false)
             }
             MainScreenEvent.DismissDropdown -> {
                 state = state.copy(dropdownExpanded = false)
@@ -68,15 +70,15 @@ class MainScreenViewModel(
             MainScreenEvent.SpeakTranslationClicked -> {
                 speakTranslation()
             }
-            MainScreenEvent.DismissError -> {
-                state = state.copy(errorMessage = null)
+            MainScreenEvent.DismissAlert -> {
+                state = state.copy(errorMessage = null, errorMessageId = null, alertMessageId = null)
             }
         }
     }
 
     private fun translateText() {
         if (state.textToTranslate.isEmpty()) {
-            state = state.copy(errorMessage = "Please enter text to translate")
+            state = state.copy(errorMessageId = R.string.enter_text)
             return
         }
 
@@ -101,13 +103,24 @@ class MainScreenViewModel(
 
     private fun speakTranslation() {
         if (state.translatedText.isNotEmpty()) {
+            if (tts.isLanguageAvailable(state.selectedLanguage) == TextToSpeech.LANG_MISSING_DATA) {
+                state = state.copy(alertMessageId = R.string.install_language)
+                return
+            }
+            tts.language = state.selectedLanguage
             state.selectedLanguage?.let { locale ->
-                tts.speak(
-                    state.translatedText,
-                    TextToSpeech.QUEUE_FLUSH,
-                    null,
-                    locale.language
-                )
+                if (
+                    tts.speak(
+                        state.translatedText,
+                        TextToSpeech.QUEUE_FLUSH,
+                        null,
+                        "utteranceId"
+                    )  == TextToSpeech.ERROR
+                ) {
+                    state = state.copy(errorMessageId = R.string.speaking_error)
+                } else {
+                    Log.d("MainScreenViewModel", "Speaking translation: ${state.selectedLanguage?.displayLanguage}")
+                }
             }
         }
     }
